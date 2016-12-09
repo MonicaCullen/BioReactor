@@ -1,0 +1,8 @@
+{
+  "Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)OP(=O)(O)OCC2OC(n3cnc4c(N)ncnc43)C(O)C2O)C(O)C1O": "W100001", 
+  "O=CC(O)C(O)C(O)C(O)CO": "W100002", 
+  "Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OP(=O)(O)OP(=O)(O)O)C(O)C1O": "W100005", 
+  "Nc1ncnc2c1ncn2C1OC(COP(=O)(O)OP(=O)(O)OP(=O)(OC2OC(CO)C(O)C(O)C2O)OP(=O)(O)OCC2OC(n3cnc4c(N)ncnc43)C(O)C2O)C(O)C1O": "W100003", 
+  "C[S+](C)CC1OC(n2cnc3c(N)ncnc32)C(O)C1O": "W100004", 
+  "*****": "W100000"
+}
