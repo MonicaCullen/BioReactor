@@ -595,19 +595,13 @@ def standSmiNameId():
     
     return StandSmiName
 
-def smirks2rxnName(smirks): 
+def smirks2rxnName(smirks,StandSmiName): 
 
     newCPSmiId = json.load(open('./newCPSmiId.json'))
-
-    try:
-        StandSmiName = json.load(open('./StandSmi_NameId.json')) 
-    except:
-        StandSmiName = standSmiNameId()
 
     rs = [i.strip() for i in smirks.split('>>')[0].split('.')]
     ps = [j.strip() for j in smirks.split('>>')[1].split('.')]
 
-   
     _rs = list(set(rs))
     _ps = list(set(ps))
     coefRs = list();coefRsName = list();coefRsId = list()
@@ -654,21 +648,18 @@ def smirks2rxnName(smirks):
                 index2[str(m)].append(str(sName))
                 index3[str(m)].append(str(sId)) 
 
-
     coefSmirks =' + '.join(coefRs)+ ' >> ' + ' + '.join(coefPs)
     coefrxnName =' + '.join(coefRsName) + ' >> ' +' + '.join(coefPsName)
     coefrxnId =' + '.join(coefRsId)+ ' >> ' + ' + '.join(coefPsId) 
     
     end1 = time.strftime(r'%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
-    print end1
 
     with open('./newCPSmiId.json','w') as fn:
         json.dump(newCPSmiId,fn,indent = 2)
     return (coefSmirks,coefrxnName,coefrxnId)
 
-
 def main():
-    start = time.strftime(r'%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
+    start = time.clock()
     # queryRsSmi ="C(C1C(C(C(C(O1)O)O)O)O)O"
     # queryPsSmi ="C(C1C(C(C(C(O1)O)O)O)O)O.C(C1C(C(C(C(O1)O)O)O)O)O"
    
@@ -683,28 +674,11 @@ def main():
 
     queryRsSmi ="CO[C@H]1C[C@@H](OP(O)(=O)OP(O)(=O)OC[C@H]2O[C@H](C[C@@H]2O)n2cc(C)c(=O)[nH]c2=O)O[C@@H](C)[C@@H]1O"
     queryPsSmi =""
-
-    
     BioReactor(queryRsSmi,queryPsSmi,Ec = False,Draw=False)
-    end = time.strftime(r'%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
-    
-    print start
-    print end
+    end = time.clock()
 
-        
+    print (end - start)
+    
 if __name__ == "__main__":
     main()
-    # start = time.strftime(r'%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
-    # print start
-
-    # smirks = 'CSC.Nc1ncnc2n(cnc12)[C@@H]1O[C@H](COP([O-])(=O)OP([O-])(=O)OP([O-])([O-])=O)[C@@H](O)[C@H]1O.[OH2]>>C[S+](C)CC1OC(n2cnc3c(N)ncnc32)C(O)C1O.O=P(O)(O)O.O=P(O)(O)OP(=O)(O)O'
-    # (coefSmirks,coefrxnName,coefrxnId) = smirks2rxnName(smirks)
-    # print coefSmirks
-    # print coefrxnName
-    # print coefrxnId
-
-    # end2 = time.strftime(r'%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
-    # print end2
-
-
 
