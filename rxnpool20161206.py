@@ -22,7 +22,7 @@ from rdkit.Chem.AllChem import ReactionFromSmarts as rxnfsma
 from rdkit.Chem.Fingerprints import FingerprintMols
 
 
-def BioReactor(queryRsSmi,queryPsSmi=False,Ec=False,Draw=True):  
+def BioReactor(queryRsSmi,queryPsSmi=False,Ec=False,Draw=False):  
     
     Rid_EcAndPattern = json.load(open("./Rid_EcAndPattern.json")) 
     rhea_ECAssigner = json.load(open("./rhea_ECAssigner.json"))
@@ -305,7 +305,8 @@ def BioReactor(queryRsSmi,queryPsSmi=False,Ec=False,Draw=True):
                 preRxnNum = 'predictedReaction %s' % it  
                 preResultsDic[preRxnNum] = dict()  
 
-                preResultsDic[preRxnNum]["Smikrs"] = smirks  
+                preResultsDic[preRxnNum]["Smikrs"] = smirks
+
                 ref = 0
                 for _id in idlist:
                     ref+=1
@@ -658,6 +659,34 @@ def smirks2rxnName(smirks,StandSmiName):
         json.dump(newCPSmiId,fn,indent = 2)
     return (coefSmirks,coefrxnName,coefrxnId)
 
+def mainRxn(queryRsSmi,resultFilePath,saveFilePath):
+
+    queryPreMainCpRxn = dict()
+    preRxns = json.load(open(resultFile))
+    for preRxn,it in preRxns.items():
+        rxn_ps = [NeutraliseCharges(i)[0] for i in it["Smikrs"].split('>>')[1].split('.')]
+
+        psSmi = dict()
+        maxSmi = 0
+        maxSmiPs = ''
+
+        for ps in rxn_ps:
+            sim = similar(NeutraliseCharges(queryRsSmi)[0],ps)
+            if sim > maxSmi:
+                maxSmi = sim
+                maxSmiPs = ps
+    
+        queryPreMainCpRxn[maxSmiPs] = dict()
+        queryPreMainCpRxn[maxSmiPs]['Similarity'] = maxSmi
+        
+        if preRxn not in queryPreMainCpRxn[maxSmiPs].keys():
+            queryPreMainCpRxn[maxSmiPs]['preRxn'] = list()
+        
+        queryPreMainCpRxn[maxSmiPs]['preRxn'].append(preRxn)
+
+    with open(os.path.join(saveFilePath,'queryPreMainCpRxn.json'),'w')as fn:
+        json.dump(queryPreMainCpRxn,fn,indent = 2)
+
 def main():
     start = time.clock()
     # queryRsSmi ="C(C1C(C(C(C(O1)O)O)O)O)O"
@@ -672,9 +701,10 @@ def main():
     # queryRsSmi ="OCCCCO"
     # queryPsSmi ="[OH][CH2][CH2][CH2][CH]=[O]"
 
-    queryRsSmi ="CO[C@H]1C[C@@H](OP(O)(=O)OP(O)(=O)OC[C@H]2O[C@H](C[C@@H]2O)n2cc(C)c(=O)[nH]c2=O)O[C@@H](C)[C@@H]1O"
+    # queryRsSmi ="CO[C@H]1C[C@@H](OP(O)(=O)OP(O)(=O)OC[C@H]2O[C@H](C[C@@H]2O)n2cc(C)c(=O)[nH]c2=O)O[C@@H](C)[C@@H]1O"
+    queryRsSmi ="CSC"
     queryPsSmi =""
-    BioReactor(queryRsSmi,queryPsSmi,Ec = False,Draw=False)
+    BioReactor(queryRsSmi,queryPsSmi,Ec = False,Draw=True)
     end = time.clock()
 
     print (end - start)
